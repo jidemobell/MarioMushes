@@ -29,6 +29,32 @@ class Board extends React.Component {
     };
   }
 
+  componentDidMount() {
+    setTimeout(this.interval.bind(this), 4000);
+  }
+
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  setMarioPostion(step) {
+    this.setState({
+      marioPostion: step,
+    });
+  }
+
+  setEnemyPostions(array) {
+    this.setState({
+      enemyPositions: array,
+    });
+  }
+
+  interval() {
+    setInterval(this.moveMario(), 3000);
+  }
+
+
   playerSquare(x) {
     return ((Math.round(x / 2) * x) - Math.round(x / 2));
   }
@@ -45,6 +71,122 @@ class Board extends React.Component {
     }
     return ranPositions;
   }
+
+  /** positions algorithsm */
+  generateTopHorEdgeArrays(val) {
+    const array = [];
+    let j = val;
+    while (array.length < val) {
+      array.push(j);
+      j--;
+    }
+    return array;
+  }
+
+  generateBotHorEdgeArrays(val) {
+    const array = [];
+    let j = val * val;
+    while (array.length < val) {
+      array.push(j);
+      j -= 1;
+    }
+    return array;
+  }
+
+  generateLefHorEdgeArrays(val) {
+    const array = [];
+    let j = 1;
+    while (array.length < val) {
+      array.push(j);
+      j += val;
+    }
+    return array;
+  }
+
+  generateRigHorEdgeArrays(val) {
+    const array = [];
+    let j = val;
+    while (array.length < val) {
+      array.push(j);
+      j += val;
+    }
+    return array;
+  }
+  /**
+   * @param  {int} val player or enemy position
+   * @param  {int} square board width
+   */
+
+  arrayVertFromPostion(val, square) {
+    const bottomArray = this.generateBotHorEdgeArrays(square);
+    const array = [];
+    let j = val;
+    while (array.length < square) {
+      array.push(j);
+      if (bottomArray.includes(j)) {
+        let p = val;
+        while (array.length < square) {
+          p -= square;
+          array.push(p);
+        }
+      }
+      j += square;
+    }
+    return array;
+  }
+
+  arrayHorFromPosition(val, square) {
+    const rightArray = this.generateRigHorEdgeArrays(square);
+    const array = [];
+    let j = val;
+    while (array.length < square) {
+      array.push(j);
+      if (rightArray.includes(j)) {
+        let p = val;
+        while (array.length < square) {
+          p -= 1;
+          array.push(p);
+        }
+      }
+      j += 1;
+    }
+    return array.sort((a, b) => a - b);
+  }
+
+  returnIntersect(x, y) {
+    const array = x.filter(i => -1 !== y.indexOf(i));
+    return array;
+  }
+  /** ******** */
+
+
+  /** AI */
+  marioSteps(array) {
+    let { marioPostion } = this.state;
+    const { enemyPositions } = this.state;
+    const destination = array[0];
+    while (marioPostion < destination) {
+      marioPostion++;
+      this.setMarioPostion(marioPostion);
+    }
+    enemyPositions.splice(enemyPositions.indexOf(destination, 1));
+    this.setEnemyPostions(enemyPositions);
+  }
+
+  moveMario() {
+    const { marioPostion, enemyPositions } = this.state;
+    const marioHorGrid = this.arrayHorFromPosition(marioPostion, boardHeight);
+
+    for (let i = 0; i < enemyPositions.length; i++) {
+      const element = enemyPositions[i];
+      const enemyVertGrid = this.arrayVertFromPostion(element, boardWidth);
+
+      const nextMoveArray = this.returnIntersect(marioHorGrid, enemyVertGrid);
+      this.marioSteps(nextMoveArray);
+    }
+  }
+
+  /** **** */
 
   renderSquare(i, k, p, q) {
     return (

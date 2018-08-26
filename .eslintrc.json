@@ -16,7 +16,10 @@
       "no-lonely-if":0,
       "react/no-array-index-key":0,
       "no-unused-vars":0,
-      "no-alert":0
+      "no-alert":0,
+      "react/no-unused-state":0,
+      "linebreak-style":0,
+      "yoda":0
     },
     "parserOptions": {
       "ecmaFeatures": {

@@ -1,6 +1,6 @@
 # HackerGame
 
-A simple tile game in React JS
+A simple tile game in React JS. The game takes two user inputs for game dimensions. Please ensure dimensions are perfect squares.
 
 ## Installation
 
