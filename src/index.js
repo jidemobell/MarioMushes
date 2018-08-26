@@ -35,7 +35,7 @@ class Board extends React.Component {
 
   randomSprite(stateArray) {
     const ranPositions = [];
-    const playerPostion = this.playerSquare(boardHeight); // this.playerSquare(boardHeight);
+    const playerPostion = this.playerSquare(boardHeight);
     const length = stateArray.length;
     for (let i = 0; i < boardHeight; i++) {
       const value = Math.floor((Math.random() * length) + 1);
@@ -64,18 +64,12 @@ class Board extends React.Component {
     let p = 1;
     let q = 1;
     stateArray.forEach((element, i) => {
-      /** place player at center */
       if (i + 1 === marioPostion) {
         board.push(
           this.renderSquare(<img src={mario} style={imageStyle} alt=" " />, i + 1, p, q),
         );
         q++;
       } else {
-        /**
-         * render squares with new rows at
-         * board edge limit and displaying
-         * mushrooms based on generated positions
-         */
         if ((i + 1) % boardHeight === 0) {
           if (enemyPositions.includes(i + 1)) {
             board.push(
